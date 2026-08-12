@@ -56,6 +56,11 @@ body,
 
 body {
   margin: 0;
+  /* temporary: standing in for a busy/dark theme while that system gets
+     designed. The portrait's white sticker-trim is tuned to pop against a
+     dark ground like this one - see .page__image below. */
+  background: #4e3b26;
+  color: #f3ead9;
 }
 
 .page {
@@ -72,6 +77,7 @@ body {
   width: min(40vw, 320px);
   height: auto;
   will-change: transform;
+  filter: url(#sticker-trim-white);
 }
 
 .page__links {
