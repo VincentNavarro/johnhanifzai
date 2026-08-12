@@ -9,7 +9,7 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <h1 className="site-header__name" aria-label={NAME}>
-        <span aria-hidden="true" style={{ fontFamily: font }}>
+        <span className="site-header__text" aria-hidden="true" style={{ fontFamily: font }}>
           {displayed}
           {showCursor && <span className="site-header__cursor" />}
         </span>

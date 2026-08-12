@@ -40,6 +40,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Lallikalo';
+  src: url('/fonts/lallikalo.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tango';
+  src: url('/fonts/tango.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --step: 0px;
 }
@@ -57,9 +73,9 @@ body,
 body {
   margin: 0;
   /* temporary: standing in for a busy/dark theme while that system gets
-     designed. The portrait's white sticker-trim is tuned to pop against a
-     dark ground like this one - see .page__image below. */
-  background: #4e3b26;
+     designed. The portrait's sticker-trim is tuned to pop against a dark
+     ground like this one - see .page__image below. */
+  background: #6d5336;
   color: #f3ead9;
 }
 
@@ -97,19 +113,30 @@ body {
 
 .site-header__name {
   margin: 0;
-  font-size: clamp(2.25rem, 13vw, 3rem);
+  font-size: clamp(2.25rem, 13vw, 4rem);
   font-weight: 400;
   line-height: 1;
   white-space: nowrap;
 }
 
+/* the header cycles through 5 fonts, and their internal metrics (ascent,
+   descent, how much space they reserve for descenders/swashes) vary a lot -
+   a fixed-height cursor pinned to text-bottom drifted noticeably between
+   fonts as a result. Centering it in a flex row against the text's own
+   line box, instead of pinning to a font-metric-dependent edge, spreads
+   any mismatch evenly above/below rather than concentrating it at the
+   bottom. */
+.site-header__text {
+  display: inline-flex;
+  align-items: center;
+}
+
 .site-header__cursor {
   display: inline-block;
   width: 2px;
-  height: 1em;
+  height: 0.78em;
   margin-left: 2px;
   background: currentColor;
-  vertical-align: text-bottom;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -124,31 +151,200 @@ body {
   }
 }
 
+/* hand-drawn chat bubble, tail pointing at the portrait. The body is plain
+   CSS (border-radius, no fixed width) so it sizes itself to whatever the
+   label text needs. The tail is a small fixed-size SVG - a tail doesn't
+   need to scale with the body - sitting behind it (lower in the DOM, no
+   z-index needed) so the body's own background covers its base and only
+   the point peeks out.
+
+   No trim/border for this default theme - it's meant for a busier theme
+   where the bubble needs to stay legible over anything behind it (see the
+   busy-background artifact). Kept out of the CSS entirely for now rather
+   than just hidden, so it's obvious it's intentionally absent; bring back
+   `box-shadow: 0 0 0 5px <color>` on .link-item__body and a matching
+   stroke on .link-item__tail-main when that theme exists. */
+/* shadow wraps the whole bubble (body + tail together) evenly on every
+   side - zero-offset drop-shadow, blur only - rather than a box-shadow
+   confined to the body that only reads as a shadow on one corner. Needed
+   once the fill stopped being reliably higher-contrast than the page
+   background it sits on. */
 .link-item {
+  position: relative;
   display: inline-flex;
   align-items: center;
+  text-decoration: none;
+  font-size: 2rem;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 0 2.5px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 7px rgba(0, 0, 0, 0.22));
+}
+
+/* mobile: image sits above the stacked links, so the tail points up at it */
+.link-item__tail {
+  position: absolute;
+  left: 50%;
+  top: -11px;
+  transform: translateX(-50%) rotate(90deg);
+  width: 22px;
+  height: 20px;
+  overflow: visible;
+}
+
+.link-item__tail-main {
+  fill: #f3ead9;
+}
+
+.link-item__body {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 0.25rem 0.5rem;
-  color: inherit;
-  text-decoration: none;
-  font-size: 1.1rem;
-  white-space: nowrap;
+  padding: 0.55rem 1.2rem;
+  background: #f3ead9;
+  color: #0a0a0a;
+  font-family: 'Tango', -apple-system, system-ui, sans-serif;
+  border-radius: 14px;
 }
 
-.link-item:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 4px;
-  border-radius: 2px;
+.link-item:focus-visible .link-item__body {
+  outline: 2px solid #f3ead9;
+  outline-offset: 3px;
 }
 
-.link-item:hover {
-  opacity: 0.7;
+.link-item:hover .link-item__body {
+  background: #ff7a5c;
+}
+
+.link-item:hover .link-item__tail-main {
+  fill: #ff7a5c;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .link-item {
-    transition: opacity 150ms ease;
+  .link-item__body {
+    transition:
+      background 150ms ease,
+      transform 200ms ease;
+  }
+
+  .link-item__tail-main {
+    transition: fill 150ms ease;
+  }
+}
+
+/* --- Variant: Pop + wag --- */
+@keyframes link-popwag {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(1.1) rotate(-6deg);
+  }
+  65% {
+    transform: scale(1.1) rotate(4deg);
+  }
+  100% {
+    transform: scale(1.08) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .link-item--pop:hover {
+    animation: link-popwag 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-item--pop:hover {
+    transform: scale(1.06);
+  }
+}
+
+/* --- Variant: Sparkle --- */
+.link-item__sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.link-item__spark {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  fill: #513e28;
+  opacity: 0;
+  transform: scale(0.3) rotate(-20deg);
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.link-item__spark--1 {
+  top: -8px;
+  right: 6px;
+}
+
+.link-item__spark--2 {
+  top: 4px;
+  right: -8px;
+}
+
+.link-item__spark--3 {
+  bottom: -8px;
+  right: 14px;
+}
+
+.link-item--sparkle:hover .link-item__spark--1 {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  transition-delay: 0s;
+}
+
+.link-item--sparkle:hover .link-item__spark--2 {
+  opacity: 1;
+  transform: scale(1) rotate(12deg);
+  transition-delay: 0.09s;
+}
+
+.link-item--sparkle:hover .link-item__spark--3 {
+  opacity: 1;
+  transform: scale(1) rotate(-10deg);
+  transition-delay: 0.17s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .link-item--sparkle:hover .link-item__body {
+    transform: scale(1.03);
+  }
+}
+
+/* --- Variant: Wobble --- */
+@keyframes link-handjitter {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(0.7px, -0.5px) rotate(-0.6deg);
+  }
+  40% {
+    transform: translate(-0.6px, 0.5px) rotate(0.5deg);
+  }
+  60% {
+    transform: translate(0.5px, 0.6px) rotate(-0.5deg);
+  }
+  80% {
+    transform: translate(-0.7px, -0.4px) rotate(0.6deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .link-item--wobble:hover {
+    animation: link-handjitter 0.45s steps(1) infinite;
   }
 }
 
@@ -163,7 +359,7 @@ body {
   }
 
   .site-header__name {
-    font-size: clamp(2rem, 3vw, 3rem);
+    font-size: clamp(4rem, 3vw, 4rem);
   }
 
   .page {
@@ -179,6 +375,13 @@ body {
 
   .page__links {
     align-items: flex-start;
-    margin-left: 4rem;
+    margin-left: 1rem;
+  }
+
+  /* desktop: image sits to the left, so the tail points left at it instead */
+  .link-item__tail {
+    left: -13px;
+    top: 50%;
+    transform: translateY(-25%);
   }
 }

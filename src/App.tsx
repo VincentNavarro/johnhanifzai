@@ -1,8 +1,10 @@
 import { links } from './links'
-import { LinkItem } from './components/LinkItem'
+import { LinkItem, type LinkItemVariant } from './components/LinkItem'
 import { SiteHeader } from './components/SiteHeader'
 import { useMagneticRepel } from './hooks/useMagneticRepel'
 import johnImage from './assets/john.webp'
+
+const HOVER_VARIANTS: LinkItemVariant[] = ['pop', 'sparkle', 'wobble']
 
 function App() {
   const imageRef = useMagneticRepel<HTMLImageElement>()
@@ -26,7 +28,7 @@ function App() {
             <feComponentTransfer in="smoothed" result="crisped">
               <feFuncA type="linear" slope={7} intercept={-1.4} />
             </feComponentTransfer>
-            <feFlood floodColor="#ffffff" floodOpacity="1" result="flood" />
+            <feFlood floodColor="#f3ead9" floodOpacity="1" result="flood" />
             <feComposite in="flood" in2="crisped" operator="in" result="trim" />
             <feMerge>
               <feMergeNode in="trim" />
@@ -48,7 +50,12 @@ function App() {
         />
         <div className="page__links">
           {links.map((link, i) => (
-            <LinkItem key={link.href} link={link} step={links.length - 1 - i} />
+            <LinkItem
+              key={link.href}
+              link={link}
+              step={links.length - 1 - i}
+              variant={HOVER_VARIANTS[i % HOVER_VARIANTS.length]}
+            />
           ))}
         </div>
       </main>
