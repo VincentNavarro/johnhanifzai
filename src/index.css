@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Calera Display';
+  src: url('/fonts/calera-display.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fantai';
+  src: url('/fonts/fantai.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Trovical';
+  src: url('/fonts/trovical-reg.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Walona Handraw';
+  src: url('/fonts/walona-handraw-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inkquest';
+  src: url('/fonts/inkquest.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --step: 0px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+.page__image {
+  width: min(40vw, 320px);
+  height: auto;
+  will-change: transform;
+}
+
+.page__links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-header {
+  position: fixed;
+  top: 5%;
+  left: 5%;
+  z-index: 10;
+}
+
+.site-header__name {
+  margin: 0;
+  font-size: clamp(1.1rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.site-header__cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: currentColor;
+  vertical-align: text-bottom;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-header__cursor {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+.link-item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.25rem 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+.link-item:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.link-item:hover {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .link-item {
+    transition: opacity 150ms ease;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --step: clamp(2.5vw, 4vw, 64px);
+  }
+
+  .page {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  .page__image {
+    margin-left: 20vw;
+    width: min(20vw, 360px);
+  }
+
+  .page__links {
+    align-items: flex-start;
+    margin-left: 4rem;
+  }
+}
