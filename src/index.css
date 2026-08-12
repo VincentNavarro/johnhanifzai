@@ -84,13 +84,14 @@ body {
 .site-header {
   position: fixed;
   top: 5%;
-  left: 5%;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 10;
 }
 
 .site-header__name {
   margin: 0;
-  font-size: clamp(1.1rem, 3vw, 3rem);
+  font-size: clamp(2.25rem, 13vw, 3rem);
   font-weight: 400;
   line-height: 1;
   white-space: nowrap;
@@ -148,6 +149,15 @@ body {
 @media (min-width: 768px) {
   :root {
     --step: clamp(2.5vw, 4vw, 64px);
+  }
+
+  .site-header {
+    left: 5%;
+    transform: none;
+  }
+
+  .site-header__name {
+    font-size: clamp(2rem, 3vw, 3rem);
   }
 
   .page {
