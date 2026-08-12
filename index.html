@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="John Hanifzai" />
     <title>John Hanifzai</title>
+    <!-- preload the two fonts needed on first paint (links + the header's
+         first font) so the browser fetches them alongside the HTML instead
+         of only discovering them once it parses index.css - otherwise
+         there's a measurable flash of the fallback font (~90-300ms) on
+         every load. The other 4 header fonts aren't needed until later in
+         the typing cycle, so they don't need this. -->
+    <link rel="preload" href="/fonts/tango.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/calera-display.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <div id="root"></div>
