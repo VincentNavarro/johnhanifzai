@@ -1,56 +1,56 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @font-face {
-  font-family: 'Calera Display';
-  src: url('/fonts/calera-display.woff2') format('woff2');
+  font-family: "Calera Display";
+  src: url("/fonts/calera-display.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 
 @font-face {
-  font-family: 'Fantai';
-  src: url('/fonts/fantai.woff2') format('woff2');
+  font-family: "Fantai";
+  src: url("/fonts/fantai.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 
 @font-face {
-  font-family: 'Trovical';
-  src: url('/fonts/trovical-reg.woff2') format('woff2');
+  font-family: "Trovical";
+  src: url("/fonts/trovical-reg.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 
 @font-face {
-  font-family: 'Walona Handraw';
-  src: url('/fonts/walona-handraw-regular.woff2') format('woff2');
+  font-family: "Walona Handraw";
+  src: url("/fonts/walona-handraw-regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 
 @font-face {
-  font-family: 'Inkquest';
-  src: url('/fonts/inkquest.woff2') format('woff2');
+  font-family: "Inkquest";
+  src: url("/fonts/inkquest.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 
 @font-face {
-  font-family: 'Lallikalo';
-  src: url('/fonts/lallikalo.woff2') format('woff2');
+  font-family: "Lallikalo";
+  src: url("/fonts/lallikalo.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 
 @font-face {
-  font-family: 'Tango';
-  src: url('/fonts/tango.woff2') format('woff2');
+  font-family: "Tango";
+  src: url("/fonts/tango.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
@@ -58,6 +58,58 @@
 
 :root {
   --step: 0px;
+
+  /* Cocoa - the original/default look, values unchanged from before the
+     theme system existed. Every other theme overrides these under its own
+     [data-theme] below; --page-bg-image/--page-bg-size default to a flat
+     fill so themes that are just a solid color don't need to redeclare
+     them. */
+  --ink: #f3ead9;
+  --ink-text: #0a0a0a;
+  --accent: #ff7a5c;
+  --page-bg-color: #6d5336;
+  --page-bg-image: none;
+  --page-bg-size: auto;
+}
+
+/* Confetti's flat CSS dots read fine as-is; Leopard and Cats are both real
+   illustrated tiles (see public/leopard-tile.webp, public/cat-tile.webp) and
+   get their own blocks below - both also need the header legibility fix
+   that a busy pattern, as opposed to a flat abstract one, requires. */
+[data-theme="confetti"] {
+  --ink: #2b2013;
+  --ink-text: #f6efe2;
+  --accent: #2f6fd8;
+  --page-bg-color: #f4efe4;
+  --page-bg-image:
+    radial-gradient(circle at 12% 25%, #e2543d 0 6px, transparent 7px),
+    radial-gradient(circle at 40% 70%, #2f7ed8 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 20%, #ffb020 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 60%, #2fae6b 0 6px, transparent 7px),
+    radial-gradient(circle at 25% 85%, #9b5de5 0 5px, transparent 6px),
+    radial-gradient(circle at 90% 90%, #e2543d 0 5px, transparent 6px);
+  --page-bg-size: 110px 110px;
+}
+
+[data-theme="leopard"] {
+  --ink: #2b2013;
+  --ink-text: #f6efe2;
+  --accent: #084973;
+  --page-bg-color: #e8d2a8;
+  --page-bg-image: url("/leopard-tile.webp");
+  --page-bg-size: 200px 200px;
+}
+
+/* --ink/--ink-text/--page-bg-color sampled straight from the tile itself:
+   #1a120f is the linework, #fff9e7 the paper - so those read as pulled from
+   the art. --accent is a deliberate pick instead, not sampled. */
+[data-theme="cats"] {
+  --ink: #1a120f;
+  --ink-text: #fff9e7;
+  --accent: #67944b;
+  --page-bg-color: #fff9e7;
+  --page-bg-image: url("/cat-tile.webp");
+  --page-bg-size: 200px 200px;
 }
 
 * {
@@ -72,11 +124,11 @@ body,
 
 body {
   margin: 0;
-  /* temporary: standing in for a busy/dark theme while that system gets
-     designed. The portrait's sticker-trim is tuned to pop against a dark
-     ground like this one - see .page__image below. */
-  background: #6d5336;
-  color: #f3ead9;
+  background-color: var(--page-bg-color);
+  background-image: var(--page-bg-image);
+  background-repeat: repeat;
+  background-size: var(--page-bg-size);
+  color: var(--ink);
 }
 
 .page {
@@ -89,8 +141,22 @@ body {
   padding: 1.5rem;
 }
 
-.page__image {
+/* the sticker-trim SVG filter and the drop-shadow below live on separate
+   elements (wrapper here, image itself) rather than chained in one `filter`
+   - chaining a CSS filter function with an SVG filter reference on the same
+   element is a known cross-browser risk (Safari in particular). The shadow
+   is what keeps the trim from disappearing into a light page background;
+   it was invisible dead weight on the original single dark theme, but the
+   trim color is always light/cream now regardless of theme (see
+   sticker-trim-white in App.tsx), so it earns its keep everywhere. */
+.page__portrait {
   width: min(40vw, 320px);
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+}
+
+.page__image {
+  display: block;
+  width: 100%;
   height: auto;
   will-change: transform;
   filter: url(#sticker-trim-white);
@@ -103,9 +169,13 @@ body {
   gap: 1rem;
 }
 
+/* pushed down below the theme chooser on mobile, where the header is
+   centered and can grow wide enough to reach the chooser's corner - see
+   the 768px media query, where the header goes back to left:5%/top:5% and
+   never gets that close since the chooser stays pinned to the right. */
 .site-header {
   position: fixed;
-  top: 5%;
+  top: 6rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -117,6 +187,42 @@ body {
   font-weight: 400;
   line-height: 1;
   white-space: nowrap;
+}
+
+/* the bubbles and portrait both sit on their own solid fill, so they read
+   fine over any background - the header text has no backing shape of its
+   own, which is invisible on a flat color or a light abstract pattern but
+   breaks down over a busy illustrated tile like Leopard's or Cats'. A
+   light outline (stacked text-shadow, since text-stroke isn't reliable
+   across browsers) keeps it legible regardless of whether a given letter
+   lands on a light or dark patch of the print. 8 directions, not 4 - at
+   this offset, diagonal-only copies of a thin stroke leave visible gaps
+   directly above/below/left/right of each letter instead of a continuous
+   ring; cardinal + diagonal together close that gap. */
+[data-theme="leopard"] .site-header__name {
+  text-shadow:
+    3px 0 0 rgba(246, 239, 226, 0.85),
+    -3px 0 0 rgba(246, 239, 226, 0.85),
+    0 3px 0 rgba(246, 239, 226, 0.85),
+    0 -3px 0 rgba(246, 239, 226, 0.85),
+    2.1px 2.1px 0 rgba(246, 239, 226, 0.85),
+    -2.1px 2.1px 0 rgba(246, 239, 226, 0.85),
+    2.1px -2.1px 0 rgba(246, 239, 226, 0.85),
+    -2.1px -2.1px 0 rgba(246, 239, 226, 0.85),
+    0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="cats"] .site-header__name {
+  text-shadow:
+    3px 0 0 rgba(255, 249, 231, 0.9),
+    -3px 0 0 rgba(255, 249, 231, 0.9),
+    0 3px 0 rgba(255, 249, 231, 0.9),
+    0 -3px 0 rgba(255, 249, 231, 0.9),
+    2.1px 2.1px 0 rgba(255, 249, 231, 0.9),
+    -2.1px 2.1px 0 rgba(255, 249, 231, 0.9),
+    2.1px -2.1px 0 rgba(255, 249, 231, 0.9),
+    -2.1px -2.1px 0 rgba(255, 249, 231, 0.9),
+    0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 /* the header cycles through 5 fonts, and their internal metrics (ascent,
@@ -187,7 +293,8 @@ body {
   white-space: nowrap;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  filter: drop-shadow(0 0 2.5px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 7px rgba(0, 0, 0, 0.22));
+  filter: drop-shadow(0 0 2.5px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 0 7px rgba(0, 0, 0, 0.22));
 }
 
 /* mobile: image sits above the stacked links, so the tail points up at it */
@@ -202,7 +309,7 @@ body {
 }
 
 .link-item__tail-main {
-  fill: #f3ead9;
+  fill: var(--ink);
 }
 
 .link-item__body {
@@ -214,23 +321,27 @@ body {
   min-height: 44px;
   min-width: 44px;
   padding: 0.55rem 1.2rem;
-  background: #f3ead9;
-  color: #0a0a0a;
-  font-family: 'Tango', -apple-system, system-ui, sans-serif;
+  background: var(--ink);
+  color: var(--ink-text);
+  font-family:
+    "Tango",
+    -apple-system,
+    system-ui,
+    sans-serif;
   border-radius: 14px;
 }
 
 .link-item:focus-visible .link-item__body {
-  outline: 2px solid #f3ead9;
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
 .link-item:hover .link-item__body {
-  background: #ff7a5c;
+  background: var(--accent);
 }
 
 .link-item:hover .link-item__tail-main {
-  fill: #ff7a5c;
+  fill: var(--accent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -357,14 +468,75 @@ body {
   }
 }
 
+/* theme picker - "square tabs" from the artifact exploration. Each swatch is
+   a full 44x44 tap target (the artifact's tiny demo squares don't meet that
+   on their own); whichever one is hovered or currently picked stretches
+   down from its top edge, which doubles as the selection indicator so no
+   ring/border swap is needed for that. Border color is keyed to each
+   swatch's own fill (light swatch -> dark border, dark swatch -> light
+   border) rather than the page it's sitting on, same reasoning as the
+   artifact's chooser concepts. */
+.theme-chooser {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* one border color for all four, not keyed per-swatch like the artifact's
+   chooser concepts were - three of the four swatches are light-toned, so a
+   dark outline keeps those crisp; the one dark swatch (Cocoa) loses a
+   little definition against its own fill, but that reads as a minor,
+   acceptable trade next to four buttons that visibly don't match. */
+.theme-chooser__swatch {
+  width: 44px;
+  height: 44px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: var(--swatch, transparent);
+  background-image: var(--swatch-image, none);
+  background-repeat: repeat;
+  background-size: 30px 30px;
+  outline: 1.5px solid rgba(0, 0, 0, 0.55);
+  outline-offset: -1px;
+}
+
+.theme-chooser__swatch:focus-visible {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 5px rgba(0, 0, 0, 0.6);
+}
+
+.theme-chooser__swatch:hover,
+.theme-chooser__swatch[aria-pressed="true"] {
+  height: 62px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .theme-chooser__swatch {
+    transition: height 0.18s ease;
+  }
+}
+
 @media (min-width: 768px) {
   :root {
     --step: clamp(2.5vw, 4vw, 64px);
   }
 
   .site-header {
+    top: 5%;
     left: 5%;
     transform: none;
+  }
+
+  .theme-chooser {
+    top: 1.25rem;
+    right: 1.25rem;
   }
 
   .site-header__name {
@@ -381,7 +553,7 @@ body {
     padding: 0;
   }
 
-  .page__image {
+  .page__portrait {
     margin-left: 20vw;
     width: min(20vw, 360px);
   }
