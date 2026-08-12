@@ -5,7 +5,7 @@
   src: url('/fonts/calera-display.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -13,7 +13,7 @@
   src: url('/fonts/fantai.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -21,7 +21,7 @@
   src: url('/fonts/trovical-reg.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -29,7 +29,7 @@
   src: url('/fonts/walona-handraw-regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -37,7 +37,7 @@
   src: url('/fonts/inkquest.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -45,7 +45,7 @@
   src: url('/fonts/lallikalo.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -53,7 +53,7 @@
   src: url('/fonts/tango.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 :root {
@@ -129,6 +129,15 @@ body {
 .site-header__text {
   display: inline-flex;
   align-items: center;
+}
+
+/* Calera Display renders far wider than the other 4 header fonts at the
+   same size - on mobile it comes in at ~99% of a 375px viewport, edge to
+   edge with no breathing room (checked; the others sit at 72% or less and
+   don't need this). Reset back to 1em on desktop below, where there's
+   plenty of room regardless of font. */
+.site-header__text--wide {
+  font-size: 0.9em;
 }
 
 .site-header__cursor {
@@ -360,6 +369,10 @@ body {
 
   .site-header__name {
     font-size: clamp(4rem, 3vw, 4rem);
+  }
+
+  .site-header__text--wide {
+    font-size: 1em;
   }
 
   .page {
