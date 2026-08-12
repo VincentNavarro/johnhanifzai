@@ -79,7 +79,7 @@
 [data-theme="leopard"] {
   --ink: #2b2013;
   --ink-text: #f6efe2;
-  --accent: #c8862a;
+  --accent: #084973;
   --page-bg-color: #e8d2a8;
   --page-bg-image: url("/leopard-tile.webp");
   --page-bg-size: 200px 200px;
@@ -91,7 +91,7 @@
 [data-theme="cats"] {
   --ink: #1a120f;
   --ink-text: #fff9e7;
-  --accent: #084973;
+  --accent: #67944b;
   --page-bg-color: #fff9e7;
   --page-bg-image: url("/cat-tile.webp");
   --page-bg-size: 200px 200px;
