@@ -37,9 +37,9 @@ describe('ThemeChooser', () => {
   })
 
   it('reads a previously stored theme back on mount', () => {
-    localStorage.setItem('theme', 'wildwest')
+    localStorage.setItem('theme', 'cats')
     render(<ThemeChooser />)
-    expect(screen.getByRole('button', { name: 'Wildwest' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Cats' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('falls back to the default theme when localStorage holds garbage', () => {

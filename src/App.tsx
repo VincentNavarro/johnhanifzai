@@ -1,4 +1,5 @@
 import { links } from './links'
+import { CoffeeCup } from './components/CoffeeCup'
 import { LinkItem, type LinkItemVariant } from './components/LinkItem'
 import { SiteHeader } from './components/SiteHeader'
 import { ThemeChooser } from './components/ThemeChooser'
@@ -39,6 +40,7 @@ function App() {
         </defs>
       </svg>
       <ThemeChooser />
+      <CoffeeCup />
       <SiteHeader />
       <main className="page">
         <div className="page__portrait">

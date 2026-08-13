@@ -1,4 +1,4 @@
-export type ThemeId = 'cocoa' | 'leopard' | 'cats' | 'wildwest'
+export type ThemeId = 'cocoa' | 'hieroglyphs' | 'leopard' | 'cats'
 
 export type ThemeSwatch = { kind: 'color'; value: string } | { kind: 'pattern'; url: string }
 
@@ -10,9 +10,9 @@ export type ThemeMeta = {
 
 export const THEMES: ThemeMeta[] = [
   { id: 'cocoa', label: 'Cocoa', swatch: { kind: 'color', value: '#6d5336' } },
+  { id: 'hieroglyphs', label: 'Hieroglyphs', swatch: { kind: 'pattern', url: '/hieroglyphs-tile.webp' } },
   { id: 'leopard', label: 'Leopard', swatch: { kind: 'pattern', url: '/leopard-tile.webp' } },
   { id: 'cats', label: 'Cats', swatch: { kind: 'pattern', url: '/cat-tile.webp' } },
-  { id: 'wildwest', label: 'Wildwest', swatch: { kind: 'pattern', url: '/wildwest-tile.webp' } },
 ]
 
 export const DEFAULT_THEME: ThemeId = 'cocoa'
