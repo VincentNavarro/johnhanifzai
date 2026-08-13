@@ -160,6 +160,14 @@ body {
   filter: url(#sticker-trim-white);
 }
 
+/* Hieroglyphs' bubbles and header are navy, so the portrait's black ink
+   (hair, beard, outline) is recolored to match - ties the whole theme to
+   one accent instead of leaving black as an unrelated fourth color. Scoped
+   to just this theme; every other theme keeps the original black ink. */
+[data-theme="hieroglyphs"] .page__image {
+  filter: url(#recolor-navy) url(#sticker-trim-white);
+}
+
 .page__links {
   display: flex;
   flex-direction: column;

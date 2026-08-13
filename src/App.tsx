@@ -13,9 +13,10 @@ function App() {
 
   return (
     <>
-      {/* hidden filter def: a white "sticker trace" grown from the portrait's
+      {/* hidden filter defs: a white "sticker trace" grown from the portrait's
           own alpha silhouette, so it stays legible on a busy/dark background
-          instead of a box around it */}
+          instead of a box around it - plus a per-theme ink recolor (see
+          .page__image in index.css for which themes use which) */}
       <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
         <defs>
           <filter id="sticker-trim-white" x="-40%" y="-40%" width="180%" height="180%">
@@ -35,6 +36,27 @@ function App() {
             <feMerge>
               <feMergeNode in="trim" />
               <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="recolor-navy" x="-20%" y="-20%" width="140%" height="140%">
+            {/* recolors the portrait's near-black opaque ink (hair, beard,
+                outline strokes) to navy, leaving everything else - skin
+                tone, the gray glasses frame, eye whites - untouched.
+                luminance-to-alpha gives a mask where dark = low alpha;
+                inverting and intersecting with the source's own alpha keeps
+                the transparent background (also "dark") from being picked
+                up as ink. */}
+            <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="luma" />
+            <feComponentTransfer in="luma" result="darkMask">
+              <feFuncA type="linear" slope={-8} intercept={4} />
+            </feComponentTransfer>
+            <feComposite in="darkMask" in2="SourceAlpha" operator="in" result="inkMask" />
+            <feFlood floodColor="#084973" floodOpacity="1" result="navy" />
+            <feComposite in="navy" in2="inkMask" operator="in" result="navyInk" />
+            <feComposite in="SourceGraphic" in2="inkMask" operator="out" result="rest" />
+            <feMerge>
+              <feMergeNode in="rest" />
+              <feMergeNode in="navyInk" />
             </feMerge>
           </filter>
         </defs>
