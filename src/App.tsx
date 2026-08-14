@@ -41,14 +41,18 @@ function App() {
           <filter id="recolor-navy" x="-20%" y="-20%" width="140%" height="140%">
             {/* recolors the portrait's near-black opaque ink (hair, beard,
                 outline strokes) to navy, leaving everything else - skin
-                tone, the gray glasses frame, eye whites - untouched.
-                luminance-to-alpha gives a mask where dark = low alpha;
-                inverting and intersecting with the source's own alpha keeps
-                the transparent background (also "dark") from being picked
-                up as ink. */}
+                tone, the gray glasses frame, eye whites, and the gray
+                shading strokes inside the hair - untouched. luminance-to-
+                alpha gives a mask where dark = low alpha; inverting and
+                intersecting with the source's own alpha keeps the
+                transparent background (also "dark") from being picked up
+                as ink. Cutoff is tight (full selection gone by ~L0.008,
+                ~2/255) so it only catches true #000000-ish ink - a looser
+                first pass (slope -8/4, cutoff ~L0.5) was sweeping the gray
+                shading strokes into navy too. */}
             <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="luma" />
             <feComponentTransfer in="luma" result="darkMask">
-              <feFuncA type="linear" slope={-8} intercept={4} />
+              <feFuncA type="linear" slope={-125} intercept={1} />
             </feComponentTransfer>
             <feComposite in="darkMask" in2="SourceAlpha" operator="in" result="inkMask" />
             <feFlood floodColor="#084973" floodOpacity="1" result="navy" />
