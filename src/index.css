@@ -717,3 +717,281 @@ body {
     transform: translateY(-25%);
   }
 }
+
+/* ============ Focus Intent lightbox ============ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 14, 6, 0.6);
+  backdrop-filter: blur(3px);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox__backdrop {
+    animation: lightbox-fade-in 0.2s ease;
+  }
+}
+
+@keyframes lightbox-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* card reuses --ink/--ink-text, the same pairing the bubbles use, so it
+   automatically matches whichever theme is active instead of being tied
+   to one theme's colors */
+.lightbox__card {
+  position: relative;
+  z-index: 1;
+  width: min(30rem, 100%);
+  max-height: min(42rem, 92vh);
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+  color: var(--ink-text);
+  border-radius: 22px;
+  box-shadow:
+    0 20px 40px rgba(20, 14, 6, 0.4),
+    0 2px 0 rgba(255, 255, 255, 0.4) inset;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox__card {
+    animation: lightbox-pop-in 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+@keyframes lightbox-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88) rotate(-1.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink-text);
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 150ms ease,
+    background 150ms ease;
+}
+
+.lightbox__close:hover {
+  background: var(--accent);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.lightbox__close:focus-visible {
+  outline: 2px solid var(--ink-text);
+  outline-offset: 3px;
+}
+
+.lightbox__stage {
+  position: relative;
+  /* side padding reserves room for the two absolutely-positioned nav
+     buttons (44px + 0.5rem inset each side) so the frame/image, sized off
+     this padded content box, can never be wider than the safe space
+     between them - has to hold at any card width, mobile included, where
+     the card is nearly full-viewport instead of the desktop 30rem cap */
+  padding: 1.75rem 3.75rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* a plain white photo frame, deliberately theme-independent - it's meant
+   to look like an actual photograph regardless of which theme is active */
+.lightbox__frame {
+  position: relative;
+  background: #fff;
+  padding: 8px 8px 22px;
+  border-radius: 4px;
+  box-shadow: 0 10px 22px rgba(20, 14, 6, 0.35);
+  transform: rotate(-1.2deg);
+  max-width: 100%;
+  /* flex items default to min-width: auto, which floors shrinking at the
+     image's own intrinsic size - without this override that ignores the
+     max-width above once the image is naturally wider than the available
+     space, which is exactly the mobile/wide-screenshot case */
+  min-width: 0;
+}
+
+.lightbox__frame img {
+  display: block;
+  /* the 3 screenshots have very different aspect ratios (one is nearly
+     2.3:1, wide) - both caps together, with auto/auto sizing, let the
+     browser pick whichever axis is actually the tight one per image.
+     max-width is a percentage (of the stage's already-reserved content
+     box above), not a fixed rem, so it keeps scaling down correctly as
+     the card narrows on mobile. */
+  max-width: 100%;
+  max-height: 15rem;
+  width: auto;
+  height: auto;
+  border-radius: 1px;
+}
+
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink-text);
+  color: var(--ink);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 150ms ease;
+}
+
+.lightbox__nav:hover {
+  transform: translateY(-50%) scale(1.12);
+  background: var(--accent);
+}
+
+.lightbox__nav:focus-visible {
+  outline: 2px solid var(--ink-text);
+  outline-offset: 3px;
+}
+
+.lightbox__nav--prev {
+  left: 0.5rem;
+}
+
+.lightbox__nav--next {
+  right: 0.5rem;
+}
+
+.lightbox__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0;
+}
+
+/* the visible dot is a separate inner span, 8px, centered inside a bigger
+   invisible button - simpler and more reliable than padding the visible
+   dot itself out to a bigger tap target (padding + background-clip:
+   content-box fights this project's global box-sizing: border-box, which
+   eats the padding out of the width/height budget and leaves nothing to
+   paint). Secondary to the arrow buttons/keyboard, which already meet 44px
+   on their own, so 24px here is a reasonable middle ground rather than a
+   full 44px target that would force ugly gaps between 3 tightly-packed
+   dots. */
+.lightbox__dot {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.lightbox__dot-visual {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink-text) 45%, transparent);
+}
+
+.lightbox__dot[aria-current='true'] .lightbox__dot-visual {
+  background: var(--accent);
+}
+
+.lightbox__dot:focus-visible {
+  outline: 2px solid var(--ink-text);
+  outline-offset: 2px;
+}
+
+.lightbox__body {
+  padding: 0.2rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  overflow-y: auto;
+}
+
+.lightbox__title {
+  margin: 0;
+  font-family: 'Walona Handraw', sans-serif;
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.lightbox__desc {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  opacity: 0.75;
+}
+
+.lightbox__link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  font-family: 'Tango', sans-serif;
+  font-size: 1.15rem;
+  padding: 0.5rem 1.1rem;
+  background: var(--ink-text);
+  color: var(--ink);
+  border-radius: 12px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.lightbox__link:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+.lightbox__link:focus-visible {
+  outline: 2px solid var(--ink-text);
+  outline-offset: 3px;
+}

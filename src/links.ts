@@ -1,9 +1,9 @@
-export type Link = { label: string; href: string };
+export type Link = { label: string; href: string; modal?: boolean };
 
 // TODO: replace with real destinations
 export const links: Link[] = [
   { label: "Karate Split", href: "https://karatesplit.11integral.com" },
-  { label: "Focus Intent", href: "https://example.com/two" },
+  { label: "Focus Intent", href: "https://example.com/two", modal: true },
   { label: "AboutMe", href: "https://johnnyabout.11integral.com" },
   { label: "11Integral", href: "https://11Integral.com" },
   {

@@ -5,9 +5,12 @@ import { links } from './links'
 import { SOUND_URLS } from './hooks/sounds'
 
 describe('App', () => {
-  it('renders one link per entry in links.ts, in order', () => {
-    render(<App />)
-    const rendered = screen.getAllByRole('link').map((el) => el.textContent)
+  it('renders one item per entry in links.ts, in order', () => {
+    // Focus Intent renders as a <button> (opens a modal), not an <a> - a
+    // role-based query would only catch the plain links, so this matches
+    // on the shared .link-item class both variants use instead
+    const { container } = render(<App />)
+    const rendered = Array.from(container.querySelectorAll('.link-item')).map((el) => el.textContent)
     expect(rendered).toEqual(links.map((link) => link.label))
   })
 
@@ -43,8 +46,8 @@ describe('App', () => {
   })
 
   it('staggers links so the bottom (last) link has no offset and each one above steps out further', () => {
-    render(<App />)
-    const rendered = screen.getAllByRole('link')
+    const { container } = render(<App />)
+    const rendered = Array.from(container.querySelectorAll<HTMLElement>('.link-item'))
     const steps = rendered.map((el) => Number(el.style.getPropertyValue('--i')))
     // last link in visual order (closest to the image) is the last data entry, offset 0
     expect(steps[steps.length - 1]).toBe(0)
@@ -52,5 +55,18 @@ describe('App', () => {
     for (let i = 0; i < steps.length - 1; i++) {
       expect(steps[i]).toBe(steps[i + 1] + 1)
     }
+  })
+
+  it('opens the Focus Intent modal when its bubble is clicked, and closes on Escape', () => {
+    render(<App />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Focus Intent' }))
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Focus Intent' })).toBeInTheDocument()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 })

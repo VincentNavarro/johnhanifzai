@@ -6,6 +6,7 @@ type LinkItemProps = {
   link: Link
   step: number
   variant: LinkItemVariant
+  onClick?: () => void
 }
 
 const SPARK_PATHS = [
@@ -14,15 +15,12 @@ const SPARK_PATHS = [
   'M0,-6 C0.9,-1.7 1.7,-0.9 6,0 C1.7,0.9 0.9,1.7 0,6 C-0.9,1.7 -1.7,0.9 -6,0 C-1.7,-0.9 -0.9,-1.7 0,-6 Z',
 ]
 
-export function LinkItem({ link, step, variant }: LinkItemProps) {
-  return (
-    <a
-      href={link.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`link-item link-item--${variant}`}
-      style={{ marginLeft: 'calc(var(--i) * var(--step))', '--i': step } as React.CSSProperties}
-    >
+export function LinkItem({ link, step, variant, onClick }: LinkItemProps) {
+  const className = `link-item link-item--${variant}`
+  const style = { marginLeft: 'calc(var(--i) * var(--step))', '--i': step } as React.CSSProperties
+
+  const content = (
+    <>
       <svg className="link-item__tail" viewBox="0 0 20 18" aria-hidden="true">
         <polygon className="link-item__tail-main" points="20,4 20,12 2,16" />
       </svg>
@@ -38,6 +36,23 @@ export function LinkItem({ link, step, variant }: LinkItemProps) {
           </span>
         )}
       </span>
+    </>
+  )
+
+  // links flagged `modal` open a dialog in place rather than navigating -
+  // same look, but a <button> instead of an <a>, since it isn't a link to
+  // anywhere
+  if (onClick) {
+    return (
+      <button type="button" className={className} style={style} onClick={onClick}>
+        {content}
+      </button>
+    )
+  }
+
+  return (
+    <a href={link.href} target="_blank" rel="noopener noreferrer" className={className} style={style}>
+      {content}
     </a>
   )
 }

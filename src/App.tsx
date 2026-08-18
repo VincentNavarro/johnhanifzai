@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { links } from './links'
 import { CoffeeCup } from './components/CoffeeCup'
+import { FocusIntentModal } from './components/FocusIntentModal'
 import { LinkItem, type LinkItemVariant } from './components/LinkItem'
 import { SiteHeader } from './components/SiteHeader'
 import { ThemeChooser } from './components/ThemeChooser'
@@ -12,6 +14,8 @@ const HOVER_VARIANTS: LinkItemVariant[] = ['pop', 'sparkle', 'wobble']
 function App() {
   const imageRef = useMagneticRepel<HTMLImageElement>()
   const playRandomSound = useRandomSound()
+  const [focusIntentOpen, setFocusIntentOpen] = useState(false)
+  const focusIntentLink = links.find((link) => link.modal)
 
   return (
     <>
@@ -95,10 +99,18 @@ function App() {
               link={link}
               step={links.length - 1 - i}
               variant={HOVER_VARIANTS[i % HOVER_VARIANTS.length]}
+              onClick={link.modal ? () => setFocusIntentOpen(true) : undefined}
             />
           ))}
         </div>
       </main>
+      {focusIntentLink && (
+        <FocusIntentModal
+          open={focusIntentOpen}
+          href={focusIntentLink.href}
+          onClose={() => setFocusIntentOpen(false)}
+        />
+      )}
     </>
   )
 }
