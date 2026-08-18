@@ -1,8 +1,13 @@
-export type Link = { label: string; href: string }
+export type Link = { label: string; href: string };
 
 // TODO: replace with real destinations
 export const links: Link[] = [
-  { label: 'Karate Chop Bill', href: 'https://example.com/one' },
-  { label: 'Focus Tabs', href: 'https://example.com/two' },
-  { label: 'Myspace', href: 'https://example.com/three' },
-]
+  { label: "Karate Split", href: "https://karatesplit.11integral.com" },
+  { label: "Focus Intent", href: "https://example.com/two" },
+  { label: "AboutMe", href: "https://johnnyabout.11integral.com" },
+  { label: "11Integral", href: "https://11Integral.com" },
+  {
+    label: "MemoryBook",
+    href: "https://padlet.com/obrachristina1/johnny-hanifzai-g9yho9a9mmso12c5",
+  },
+];
