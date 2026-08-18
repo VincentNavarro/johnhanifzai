@@ -4,12 +4,14 @@ import { LinkItem, type LinkItemVariant } from './components/LinkItem'
 import { SiteHeader } from './components/SiteHeader'
 import { ThemeChooser } from './components/ThemeChooser'
 import { useMagneticRepel } from './hooks/useMagneticRepel'
+import { useRandomSound } from './hooks/useRandomSound'
 import johnImage from './assets/john.webp'
 
 const HOVER_VARIANTS: LinkItemVariant[] = ['pop', 'sparkle', 'wobble']
 
 function App() {
   const imageRef = useMagneticRepel<HTMLImageElement>()
+  const playRandomSound = useRandomSound()
 
   return (
     <>
@@ -70,15 +72,21 @@ function App() {
       <SiteHeader />
       <main className="page">
         <div className="page__portrait">
-          <img
-            ref={imageRef}
-            className="page__image"
-            src={johnImage}
-            // TODO: real alt text
-            alt="John"
-            width={912}
-            height={881}
-          />
+          <button
+            type="button"
+            className="page__portrait-button"
+            aria-label="Play a random sound"
+            onClick={playRandomSound}
+          >
+            <img
+              ref={imageRef}
+              className="page__image"
+              src={johnImage}
+              alt=""
+              width={912}
+              height={881}
+            />
+          </button>
         </div>
         <div className="page__links">
           {links.map((link, i) => (

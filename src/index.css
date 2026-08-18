@@ -120,6 +120,14 @@ body,
   height: 100%;
 }
 
+/* the source is an 8-frame .ani (Windows animated cursor) - no browser
+   supports that format for CSS cursor, only .cur/static images. Custom
+   pixel-art hands (128px source, resized to 32px with point/nearest-
+   neighbor filtering to keep the pixel edges crisp - default smooth
+   resampling would blur them) - pointer.png is the page-wide default here,
+   cursor.png is the link-hover state below. 1 0 is each image's actual
+   topmost opaque pixel (checked, not guessed), which is where the pointing
+   fingertip sits in both. */
 body {
   margin: 0;
   background-color: var(--page-bg-color);
@@ -127,16 +135,30 @@ body {
   background-repeat: repeat;
   background-size: var(--page-bg-size);
   color: var(--ink);
+  cursor: url('/cursors/pointer.png') 1 0, auto;
 }
 
+/* padding-top reserves space for the fixed mobile header regardless of how
+   tall the links block grows (it used to just barely clear when there were
+   3 links; 5 pushed the vertically-centered content up into it). Desktop's
+   `padding: 0` below resets this along with the rest - the header there is
+   in-flow enough that fixed clearance isn't needed. */
 .page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* flex-start, not center: with `center`, leftover space (viewport minus
+     content minus padding) gets split above and below the content on top
+     of the padding-top reservation below, which is what actually produced
+     the excess header-to-portrait gap - tuning padding-top alone couldn't
+     fix that, since centering was adding extra space regardless of its
+     value. flex-start makes padding-top the only thing controlling the
+     gap, so it can be tuned directly. */
+  justify-content: flex-start;
   gap: 2rem;
   padding: 1.5rem;
+  padding-top: 10.5rem;
 }
 
 /* the sticker-trim SVG filter and the drop-shadow below live on separate
@@ -150,6 +172,30 @@ body {
 .page__portrait {
   width: min(40vw, 320px);
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+}
+
+/* plain button reset - it exists for click/keyboard semantics and a focus
+   ring, not to look like a button. The portrait's own sticker-trim shape
+   already reads as the tap target, so no visible affordance beyond that. */
+.page__portrait-button {
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  /* explicit `inherit`, not just an absent rule - browsers' own UA
+     stylesheet gives <button> a built-in `cursor: default`, which wins
+     over natural inheritance from body just as surely as an author rule
+     would. That default (not the custom pointer.png) is what was actually
+     showing before this. */
+  cursor: inherit;
+  border-radius: 50%;
+}
+
+.page__portrait-button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
 }
 
 .page__image {
@@ -168,11 +214,18 @@ body {
   filter: url(#recolor-navy) url(#sticker-trim-white);
 }
 
+/* 3 per row on mobile - each link gets a fixed third of the row (not
+   auto-width) specifically so a short last row (1 or 2 links) has room left
+   over for flex-wrap's per-line `justify-content: center` to center it,
+   rather than the items hugging the left edge. Desktop below reverts to
+   the single-column staircase. */
 .page__links {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.6rem;
 }
 
 /* pushed down below the theme chooser on mobile, where the header is
@@ -302,21 +355,33 @@ body {
    confined to the body that only reads as a shadow on one corner. Needed
    once the fill stopped being reliably higher-contrast than the page
    background it sits on. */
+/* fixed thirds (not auto-width) is what makes 3-per-row deterministic
+   rather than "however many happen to fit" - see .page__links. Smaller
+   font + wrapping (not nowrap) so longer labels like "Memory Book" fit a
+   ~1/3-viewport column without overflowing it; desktop below resets both
+   for the single-column staircase, where bubbles size to their content. */
 .link-item {
   position: relative;
   display: inline-flex;
+  flex: 0 0 calc((100% - 2 * 0.6rem) / 3);
   align-items: center;
+  justify-content: center;
   text-decoration: none;
-  font-size: 2rem;
-  white-space: nowrap;
+  text-align: center;
+  font-size: 1.05rem;
+  white-space: normal;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   filter: drop-shadow(0 0 2.5px rgba(0, 0, 0, 0.45))
     drop-shadow(0 0 7px rgba(0, 0, 0, 0.22));
 }
 
-/* mobile: image sits above the stacked links, so the tail points up at it */
+/* the tail's whole point is "pointing at the portrait" - that reads fine
+   for a single column stacked right below it, but breaks down once a
+   second/third row of links no longer sits next to the portrait at all.
+   Hidden on the mobile grid, restored for desktop's staircase below. */
 .link-item__tail {
+  display: none;
   position: absolute;
   left: 50%;
   top: -11px;
@@ -338,7 +403,7 @@ body {
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 0.55rem 1.2rem;
+  padding: 0.5rem 0.6rem;
   background: var(--ink);
   color: var(--ink-text);
   font-family:
@@ -352,6 +417,10 @@ body {
 .link-item:focus-visible .link-item__body {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
+}
+
+.link-item:hover {
+  cursor: url('/cursors/cursor.png') 1 0, pointer;
 }
 
 .link-item:hover .link-item__body {
@@ -514,7 +583,8 @@ body {
   height: 44px;
   border: none;
   padding: 0;
-  cursor: pointer;
+  /* explicit `inherit`, not an absent rule - see .page__portrait-button */
+  cursor: inherit;
   border-radius: 4px;
   background-color: var(--swatch, transparent);
   background-image: var(--swatch-image, none);
@@ -623,12 +693,25 @@ body {
   }
 
   .page__links {
+    flex-direction: column;
+    flex-wrap: nowrap;
     align-items: flex-start;
     margin-left: 1rem;
   }
 
+  .link-item {
+    flex: 0 0 auto;
+    font-size: 2rem;
+    white-space: nowrap;
+  }
+
+  .link-item__body {
+    padding: 0.55rem 1.2rem;
+  }
+
   /* desktop: image sits to the left, so the tail points left at it instead */
   .link-item__tail {
+    display: block;
     left: -13px;
     top: 50%;
     transform: translateY(-25%);
