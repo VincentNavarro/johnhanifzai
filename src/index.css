@@ -565,7 +565,7 @@ body {
    artifact's chooser concepts. */
 .theme-chooser {
   position: fixed;
-  top: 1rem;
+  top: 0;
   right: 1rem;
   z-index: 20;
   display: flex;
@@ -594,10 +594,20 @@ body {
   outline-offset: -1px;
 }
 
+.theme-chooser__swatch:hover {
+  cursor: url('/cursors/cursor.png') 1 0, pointer;
+}
+
+/* inset, not the outward ring most focus states on this page use - the
+   swatch row now sits flush against the very top of the viewport (see
+   .theme-chooser above), so an outward shadow on the top row would need
+   space that doesn't exist above y=0 and gets clipped by the viewport
+   edge. Drawn inside the swatch's own box instead, it stays fully visible
+   regardless of position. */
 .theme-chooser__swatch:focus-visible {
   box-shadow:
-    0 0 0 3px #fff,
-    0 0 0 5px rgba(0, 0, 0, 0.6);
+    inset 0 0 0 3px #fff,
+    inset 0 0 0 5px rgba(0, 0, 0, 0.6);
 }
 
 .theme-chooser__swatch:hover,
@@ -657,6 +667,58 @@ body {
   }
 }
 
+/* a hidden easter egg - no background, no icon, nothing visible at rest.
+   The hover cursor swap (same cursor.png the links use) is the only tell,
+   same as .link-item:hover below. Still a real 44px target, and still gets
+   a focus ring on keyboard focus - invisible to the mouse isn't the same as
+   invisible to a keyboard user, who has no other way to discover it. */
+.video-trigger {
+  position: fixed;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 20;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  padding: 0;
+  /* explicit `inherit`, not an absent rule - see .page__portrait-button */
+  cursor: inherit;
+}
+
+.video-trigger:hover {
+  cursor: url('/cursors/cursor.png') 1 0, pointer;
+}
+
+.video-trigger:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* kept out of `display: none` on purpose - some browsers refuse a
+   fullscreen request on an element that was never actually rendered */
+.video-trigger__video {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the 1px/opacity-0 sizing above is CSS, and entering fullscreen doesn't
+   clear an element's own CSS - only the UA stylesheet's fullscreen rules
+   (which handle position/size, not opacity) apply on top of it. Without
+   this override the video plays audio but renders as an invisible 1px
+   frame stretched over the whole screen. Not needed for iOS Safari's
+   webkitEnterFullscreen path, which hands off to its own native player UI
+   instead of blowing up this element in place. */
+.video-trigger__video:fullscreen {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
 @media (min-width: 768px) {
   :root {
     --step: clamp(2.5vw, 4vw, 64px);
@@ -669,7 +731,7 @@ body {
   }
 
   .theme-chooser {
-    top: 1.25rem;
+    top: 0;
     right: 1.25rem;
   }
 

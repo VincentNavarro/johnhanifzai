@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { links } from './links'
 import { CoffeeCup } from './components/CoffeeCup'
 import { FocusIntentModal } from './components/FocusIntentModal'
+import { FullscreenVideoButton } from './components/FullscreenVideoButton'
 import { LinkItem, type LinkItemVariant } from './components/LinkItem'
 import { SiteHeader } from './components/SiteHeader'
 import { ThemeChooser } from './components/ThemeChooser'
@@ -73,6 +74,7 @@ function App() {
       </svg>
       <ThemeChooser />
       <CoffeeCup />
+      <FullscreenVideoButton />
       <SiteHeader />
       <main className="page">
         <div className="page__portrait">
