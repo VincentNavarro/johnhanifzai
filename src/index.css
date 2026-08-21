@@ -433,16 +433,26 @@ body {
 }
 
 /* Cats' bubbles are green (the tile's own accent) by default, not just on
-   hover like every other theme - the hover rules above still apply here
-   too, they just no longer change the color since it's already --accent;
-   the pop/sparkle/wobble variants and cursor swap still give hover
-   feedback regardless. */
+   hover like every other theme - hover here goes to --ink (near-black)
+   instead of the usual --accent, since --accent is already the resting
+   color and would otherwise show no change. --ink-text stays cream in
+   both states (see .link-item__body's base color rule below), which
+   reads fine against both the green resting fill and the black hover
+   fill. */
 [data-theme="cats"] .link-item__body {
   background: var(--accent);
 }
 
 [data-theme="cats"] .link-item__tail-main {
   fill: var(--accent);
+}
+
+[data-theme="cats"] .link-item:hover .link-item__body {
+  background: var(--ink);
+}
+
+[data-theme="cats"] .link-item:hover .link-item__tail-main {
+  fill: var(--ink);
 }
 
 @media (prefers-reduced-motion: no-preference) {
