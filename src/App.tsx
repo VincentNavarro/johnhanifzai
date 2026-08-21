@@ -4,6 +4,7 @@ import { CoffeeCup } from './components/CoffeeCup'
 import { FocusIntentModal } from './components/FocusIntentModal'
 import { FullscreenVideoButton } from './components/FullscreenVideoButton'
 import { LinkItem, type LinkItemVariant } from './components/LinkItem'
+import { QrCodeModal } from './components/QrCodeModal'
 import { SiteHeader } from './components/SiteHeader'
 import { ThemeChooser } from './components/ThemeChooser'
 import { useMagneticRepel } from './hooks/useMagneticRepel'
@@ -16,6 +17,7 @@ function App() {
   const imageRef = useMagneticRepel<HTMLImageElement>()
   const playRandomSound = useRandomSound()
   const [focusIntentOpen, setFocusIntentOpen] = useState(false)
+  const [qrOpen, setQrOpen] = useState(false)
   const focusIntentLink = links.find((link) => link.modal)
 
   return (
@@ -73,7 +75,7 @@ function App() {
         </defs>
       </svg>
       <ThemeChooser />
-      <CoffeeCup />
+      <CoffeeCup onClick={() => setQrOpen(true)} />
       <FullscreenVideoButton />
       <SiteHeader />
       <main className="page">
@@ -113,6 +115,7 @@ function App() {
           onClose={() => setFocusIntentOpen(false)}
         />
       )}
+      <QrCodeModal open={qrOpen} onClose={() => setQrOpen(false)} />
     </>
   )
 }

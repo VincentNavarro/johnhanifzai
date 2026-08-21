@@ -127,12 +127,10 @@ whole device. Nothing decorative sits between the image and the links either.
 
 Mobile (<768px): the staircase is dropped entirely. Do not attempt a
 scaled-down diagonal — it reads as broken alignment on a narrow screen.
-Image on top, links below it in a 3-per-row wrapping grid (fixed-width
-thirds, not auto-sized, so it's a real 3-per-row rule rather than "however
-many happen to fit") — a leftover last row of 1 or 2 links is centered,
-not left-aligned. Bubble tails are hidden at this width: "points at the
-portrait" stops making sense once a second or third row no longer sits
-next to it.
+Image on top, links below it stacked full-width, one per row, with a fixed
+10px gap between them. Bubble tails are hidden at this width: "points at
+the portrait" stops making sense once a link is no longer sitting next to
+it.
 
 - The page fits in one viewport at common desktop sizes. No scrolling if it can
   be avoided.
