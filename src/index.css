@@ -368,7 +368,7 @@ body {
   justify-content: center;
   text-decoration: none;
   text-align: center;
-  font-size: 1.05rem;
+  font-size: 1.7rem;
   white-space: normal;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -404,7 +404,7 @@ body {
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 0.5rem 0.6rem;
+  padding: 0.65rem 0.9rem;
   background: var(--ink);
   color: var(--ink-text);
   font-family:
@@ -660,8 +660,14 @@ body {
    Now a real button (opens the QR code modal on click), so it needs actual
    button semantics/focus - the wiggle-on-hover above stays cosmetic and
    pointer-only, scoped to hover-capable devices below, but the tap target
-   itself has to work everywhere including touch. */
+   itself has to work everywhere including touch.
+
+   Hidden below the desktop breakpoint (restored there below): the whole
+   point of the QR code is letting someone else scan your screen from
+   across a room - on the same phone you're already browsing on, it's
+   dead weight. */
 .coffee-cup {
+  display: none;
   position: fixed;
   right: 1.25rem;
   bottom: 1.25rem;
@@ -770,6 +776,10 @@ body {
   .theme-chooser {
     top: 0;
     right: 1.25rem;
+  }
+
+  .coffee-cup {
+    display: block;
   }
 
   .site-header__name {
